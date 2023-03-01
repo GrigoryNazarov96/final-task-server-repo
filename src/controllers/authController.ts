@@ -16,6 +16,7 @@ const createSignToken = (user: IUser, statusCode: number, res: Response): void =
   const cookieOptions = {
     expires: new Date(Date.now() + ms('7d')),
     httpOnly: true,
+    secure: true,
   };
   res.cookie('jwt', token, cookieOptions);
   res.status(statusCode).json({
