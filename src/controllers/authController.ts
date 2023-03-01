@@ -17,7 +17,7 @@ const createSignToken = (user: IUser, statusCode: number, res: Response): void =
     expires: new Date(Date.now() + ms('7d')),
     httpOnly: true,
     path: '/',
-    domain: `${process.env.CLIENT_APP}`,
+    domain: `${process.env.CLIENT_URL}`,
     secure: true,
     sameSite: 'none',
   };
