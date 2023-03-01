@@ -1,0 +1,9 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": ["airbnb", "prettier", "plugin:@typescript-eslint/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {}
+}
