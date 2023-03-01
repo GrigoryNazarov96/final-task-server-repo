@@ -16,6 +16,7 @@ const createSignToken = (user: IUser, statusCode: number, res: Response): void =
   const cookieOptions: CookieOptions = {
     expires: new Date(Date.now() + ms('7d')),
     httpOnly: true,
+    path: '/',
     domain: `${process.env.CLIENT_APP}`,
     secure: true,
     sameSite: 'none',
