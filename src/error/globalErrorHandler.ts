@@ -59,6 +59,5 @@ export const globalErrorHandler = (
     if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
     sendErrorProd(error, req, res);
   }
-  console.log(err);
   sendErrorDev(err, req, res);
 };
