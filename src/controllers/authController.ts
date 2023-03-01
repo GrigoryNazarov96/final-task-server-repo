@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Request, Response, CookieOptions } from 'express';
 import User, { IUser } from '../models/userModel';
 import { ILoginUserBodyParams, ISignupUserBodyParams } from '../types';
 import * as jwt from 'jsonwebtoken';
@@ -13,10 +13,11 @@ const signToken = (id: string, name: string, email: string, role: string): strin
 
 const createSignToken = (user: IUser, statusCode: number, res: Response): void => {
   const token = signToken(user._id.toString(), user.name, user.email, user.role);
-  const cookieOptions = {
+  const cookieOptions: CookieOptions = {
     expires: new Date(Date.now() + ms('7d')),
     httpOnly: true,
     secure: true,
+    sameSite: 'none',
   };
   res.cookie('jwt', token, cookieOptions);
   res.status(statusCode).json({
