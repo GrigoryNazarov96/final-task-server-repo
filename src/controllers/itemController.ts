@@ -16,7 +16,6 @@ export const getItems = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    throw new AppError('error in get items', 404);
     let query: FilterQuery<IItem> = req.query;
     const tags = req.query.tags;
     if (tags) {
