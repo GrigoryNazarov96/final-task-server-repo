@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { CastError } from 'mongoose';
 import { AppError } from './appError';
 
-const sendErrorDev = (err: AppError, req: Request, res: Response): void => {
+const sendErrorDev = (err: AppError, _req: Request, res: Response): void => {
+  console.log(err);
   res.status(err.statusCode).json({
     status: err.status,
     error: err,
@@ -16,6 +17,7 @@ const sendErrorProd = (
   _req: Request,
   res: Response,
 ): void | Response<any, Record<string, any>> => {
+  console.log(err);
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -47,8 +49,8 @@ export const globalErrorHandler = (
   err: any,
   req: Request,
   res: Response,
-  // next: NextFunction,
-): void => {
+  _next: NextFunction,
+): void | Response => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
   if (process.env.NODE_ENV === 'production') {
@@ -57,7 +59,8 @@ export const globalErrorHandler = (
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
-    sendErrorProd(error, req, res);
+    return sendErrorProd(error, req, res);
+  } else if (process.env.NODE_ENV === 'development') {
+    sendErrorDev(err, req, res);
   }
-  sendErrorDev(err, req, res);
 };

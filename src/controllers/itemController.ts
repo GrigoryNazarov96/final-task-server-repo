@@ -16,6 +16,7 @@ export const getItems = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
+    throw new AppError('error in get items', 404);
     let query: FilterQuery<IItem> = req.query;
     const tags = req.query.tags;
     if (tags) {
@@ -116,7 +117,7 @@ export const updateItem = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const item = await Item.findByIdAndUpdate(
+    const item = await Item.updateOne(
       { _id: req.params.id },
       {
         name: req.body.name,

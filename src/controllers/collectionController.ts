@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { FilterQuery } from 'mongoose';
 import { AppError } from '../error';
 import Collection, { ICollection } from '../models/collectionModel';
+import Item from '../models/itemModel';
 import { IGetCollectionsQueryParams, IUpdateCollectionBodyParams } from '../types';
 
 export const getCollections = async (
@@ -118,6 +119,42 @@ export const deleteCollection = async (
     } else {
       throw new AppError('You can not delete collection that does not belong to you', 401);
     }
+  } catch (e: any) {
+    next(e);
+  }
+};
+
+export const getFeatured = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void | Response> => {
+  try {
+    const collections = await Item.aggregate([
+      {
+        $lookup: {
+          from: 'collections',
+          localField: 'collectionId',
+          foreignField: '_id',
+          as: 'collection',
+        },
+      },
+      {
+        $group: { _id: '$collectionId', count: { $sum: 1 } },
+      },
+      {
+        $sort: { count: -1 },
+      },
+      {
+        $limit: 5,
+      },
+    ]);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        collections,
+      },
+    });
   } catch (e: any) {
     next(e);
   }
