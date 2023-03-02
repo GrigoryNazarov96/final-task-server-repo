@@ -16,10 +16,10 @@ const createSignToken = (user: IUser, statusCode: number, res: Response): void =
   const cookieOptions: CookieOptions = {
     expires: new Date(Date.now() + ms('7d')),
     httpOnly: true,
-    path: '/',
-    domain: `${process.env.DOMAIN_URL}`,
-    secure: true,
-    sameSite: 'none',
+    // path: '/',
+    // domain: `${process.env.DOMAIN_URL}`,
+    // secure: true,
+    // sameSite: 'none',
   };
   res.cookie('jwt', token, cookieOptions);
   res.status(statusCode).json({
