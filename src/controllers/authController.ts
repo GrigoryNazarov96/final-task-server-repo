@@ -82,7 +82,7 @@ export const protect =
       } else if (req.cookies.jwt) {
         token = req.cookies.jwt;
       }
-      if (!token) {
+      if (!token || token === 'Logged Out') {
         if (params.allowNonAuthorized) {
           return next();
         }

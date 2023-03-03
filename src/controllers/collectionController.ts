@@ -3,7 +3,11 @@ import { FilterQuery } from 'mongoose';
 import { AppError } from '../error';
 import Collection, { ICollection } from '../models/collectionModel';
 import Item from '../models/itemModel';
-import { IGetCollectionsQueryParams, IUpdateCollectionBodyParams } from '../types';
+import {
+  IGetCollectionsQueryParams,
+  IUpdateCollectionBodyParams,
+  IFeaturedQueryParams,
+} from '../types';
 
 export const getCollections = async (
   req: Request<unknown, unknown, unknown, IGetCollectionsQueryParams>,
@@ -125,30 +129,40 @@ export const deleteCollection = async (
 };
 
 export const getFeatured = async (
-  req: Request,
+  req: Request<unknown, unknown, unknown, IFeaturedQueryParams>,
   res: Response,
   next: NextFunction,
 ): Promise<void | Response> => {
   try {
-    const collections = await Item.aggregate([
-      {
-        $lookup: {
-          from: 'collections',
-          localField: 'collectionId',
-          foreignField: '_id',
-          as: 'collection',
+    const query = req.query.type;
+    let collections;
+    if (query === 'biggest') {
+      collections = await Item.aggregate([
+        {
+          $group: { _id: '$collectionId', count: { $sum: 1 } },
         },
-      },
-      {
-        $group: { _id: '$collectionId', count: { $sum: 1 } },
-      },
-      {
-        $sort: { count: -1 },
-      },
-      {
-        $limit: 5,
-      },
-    ]);
+        {
+          $sort: { count: -1 },
+        },
+        {
+          $limit: 5,
+        },
+        {
+          $lookup: {
+            from: 'collections',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'collection',
+          },
+        },
+      ]);
+    } else if (query === 'liked') {
+      // collections = await Item.aggregate([
+      //   {
+      //     $group: { _id: '$collectionId', count: { $sum: 1 } }
+      //   },
+      // ]);
+    }
     res.status(200).json({
       status: 'success',
       data: {

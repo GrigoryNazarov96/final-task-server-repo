@@ -44,12 +44,12 @@ export const getResults = async (
     {
       $match: {
         $or: [
-          { name: { $regex: searchString } },
-          { 'owner.email': { $regex: searchString } },
-          { 'owner.name': { $regex: searchString } },
-          { 'collection.theme': { $regex: searchString } },
-          { 'collection.name': { $regex: searchString } },
-          // { 'review.body': { $regex: searchString } },
+          { name: { $regex: searchString, $options: 'i' } },
+          { tags: { $regex: searchString, $options: 'i' } },
+          { 'owner.email': { $regex: searchString, $options: 'i' } },
+          { 'owner.name': { $regex: searchString, $options: 'i' } },
+          { 'collection.theme': { $regex: searchString, $options: 'i' } },
+          { 'collection.name': { $regex: searchString, $options: 'i' } },
         ],
       },
     },

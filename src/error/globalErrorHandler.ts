@@ -17,7 +17,6 @@ const sendErrorProd = (
   _req: Request,
   res: Response,
 ): void | Response<any, Record<string, any>> => {
-  console.log(err);
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -59,7 +58,7 @@ export const globalErrorHandler = (
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError();
     if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
-    return sendErrorProd(error, req, res);
+    sendErrorProd(error, req, res);
   } else if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, req, res);
   }

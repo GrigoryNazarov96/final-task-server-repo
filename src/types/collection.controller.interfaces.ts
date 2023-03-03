@@ -27,3 +27,7 @@ export interface IGetCollectionsQueryParams {
   asc?: boolean;
   page?: number;
 }
+
+export interface IFeaturedQueryParams {
+  type?: string;
+}
